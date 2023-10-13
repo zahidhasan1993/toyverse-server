@@ -3,7 +3,7 @@ const cors = require("cors");
 const port = process.env.PORT || 5000;
 const app = express();
 require("dotenv").config();
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const uri = `mongodb+srv://${process.env.DB_NAME}:${process.env.DB_PASS}@cluster0.uoombu0.mongodb.net/?retryWrites=true&w=majority`;
 
 //middle ware
@@ -32,20 +32,30 @@ async function run() {
 
     //api request's
 
-
     //get apis
     app.get("/toys", async (req, res) => {
       const result = await toyCollection.find().toArray();
+
+      res.send(result);
+    });
+    app.get("/toys/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await toyCollection.findOne(query);
+
       res.send(result);
     });
 
     //post apis
 
-    app.post("/toys", async(req,res) => {
+    app.post("/toys", async (req, res) => {
       const body = req.body;
       const result = await toyCollection.insertOne(body);
-      res.send(result)
-    })
+      res.send(result);
+    });
+
+    //patch apis
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
