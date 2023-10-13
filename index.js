@@ -32,11 +32,20 @@ async function run() {
 
     //api request's
 
+
+    //get apis
     app.get("/toys", async (req, res) => {
       const result = await toyCollection.find().toArray();
       res.send(result);
     });
 
+    //post apis
+
+    app.post("/toys", async(req,res) => {
+      const body = req.body;
+      const result = await toyCollection.insertOne(body);
+      res.send(result)
+    })
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
