@@ -38,15 +38,16 @@ async function run() {
 
       res.send(result);
     });
-    app.get("/toys/:email", async(req,res) => {
+    app.get("/toys/toy/:email", async (req, res) => {
       const email = req.params.email;
-      const query = {email : email};
+      const query = { email: email };
       const result = await toyCollection.find(query).toArray();
 
-      res.send(result)
-    })
+      res.send(result);
+    });
     app.get("/toys/:id", async (req, res) => {
       const id = req.params.id;
+      console.log(id);
       const query = { _id: new ObjectId(id) };
       const result = await toyCollection.findOne(query);
 
@@ -55,23 +56,36 @@ async function run() {
 
     //post apis
 
-
     //delete apis
-    app.delete("/toys/:id", async(req,res) => {
+    app.delete("/toys/:id", async (req, res) => {
       const id = req.params.id;
-      const query = {_id : new ObjectId(id)};
+      const query = { _id: new ObjectId(id) };
       const result = await toyCollection.deleteOne(query);
 
-      res.send(result)
-    })
-    app.post("/toys", async (req, res) => {
-      const body = req.body;
-      const result = await toyCollection.insertOne(body);
       res.send(result);
     });
 
     //patch apis
+    app.patch("/toy/:id", async (req, res) => {
+      const id = req.params.id;
+      const body = req.body;
+      const filter = { _id: new ObjectId(id) };
+      const updateDoc = {
+        $set: {
+          name: body.name,
+          email: body.email,
+          picture: body.picture,
+          category: body.category,
+          price: body.price,
+          rating: body.rating,
+          details: body.details,
+        },
+      };
 
+      const result = await toyCollection.updateOne(filter, updateDoc);
+
+      res.send(result);
+    });
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
