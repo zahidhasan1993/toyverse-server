@@ -38,6 +38,13 @@ async function run() {
 
       res.send(result);
     });
+    app.get("/toys/:email", async(req,res) => {
+      const email = req.params.email;
+      const query = {email : email};
+      const result = await toyCollection.find(query).toArray();
+
+      res.send(result)
+    })
     app.get("/toys/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
@@ -48,6 +55,15 @@ async function run() {
 
     //post apis
 
+
+    //delete apis
+    app.delete("/toys/:id", async(req,res) => {
+      const id = req.params.id;
+      const query = {_id : new ObjectId(id)};
+      const result = await toyCollection.deleteOne(query);
+
+      res.send(result)
+    })
     app.post("/toys", async (req, res) => {
       const body = req.body;
       const result = await toyCollection.insertOne(body);
