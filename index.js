@@ -25,7 +25,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
 
     const database = client.db("toyverse");
     const toyCollection = database.collection("toys");
@@ -55,7 +55,11 @@ async function run() {
     });
 
     //post apis
-
+    app.post("/toys", async(req,res) => {
+      const body = req.body;
+      const result = await toyCollection.insertOne(body);
+      res.send(result);
+    })
     //delete apis
     app.delete("/toys/:id", async (req, res) => {
       const id = req.params.id;
